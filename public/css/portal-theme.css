@@ -1,0 +1,53 @@
+/* Custom Theme for Portal */
+.fi-topbar {
+    background-color: #0ea5e9 !important;
+    /* Sky 500 */
+    color: white !important;
+}
+
+.fi-topbar nav {
+    background-color: #0ea5e9 !important;
+}
+
+.fi-topbar-item-label {
+    color: white !important;
+}
+
+.fi-sidebar {
+    background-color: white !important;
+    border-right: 1px;
+}
+
+.fi-sidebar-header {
+    background-color: #0ea5e9 !important;
+    border-bottom: 12px 8px;
+}
+
+.fi-sidebar-item-label {
+    color: #374151 !important;
+    /* Gray 700 */
+}
+
+.fi-sidebar-item-icon {
+    color: #0ea5e9 !important;
+}
+
+/* Ganti Logo Filament dengan Gambar */
+.fi-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem;
+    font-size: 0 !important;
+    /* sembunyikan teks "Filament" */
+}
+
+/* Tambahkan gambar ke logo */
+.fi-logo::before {
+    content: "";
+    display: inline-block;
+    width: 200px;
+    height: 60px;
+    background-image: url('/storage/I-Kinder.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}

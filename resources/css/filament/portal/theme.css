@@ -1,0 +1,32 @@
+/* Custom Theme for Portal */
+.fi-topbar {
+    background-color: #0ea5e9 !important; /* Sky 500 */
+    color: white !important;
+}
+
+.fi-topbar nav {
+    background-color: #0ea5e9 !important;
+}
+
+.fi-topbar-item-label {
+    color: white !important;
+}
+
+.fi-sidebar {
+    background-color: white !important;
+    border-right: 1px solid #e5e7eb;
+}
+
+.fi-sidebar-item-label {
+    color: #374151 !important; /* Gray 700 */
+}
+
+.fi-sidebar-item-icon {
+    color: #0ea5e9 !important;
+}
+
+.fi-logo {
+    color: #0ea5e9 !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
