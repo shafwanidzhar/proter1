@@ -4,7 +4,7 @@
             <div>
                 <h2 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
                     SELAMAT DATANG,
-                    {{ strtoupper(auth()->user()->role === 'headmaster' ? 'KEPALA SEKOLAH' : (auth()->user()->role === 'teacher' ? 'GURU' : 'ORANG TUA')) }}
+                    {{ strtoupper(auth()->user()->role === 'admin' ? 'ADMIN' : (auth()->user()->role === 'teacher' ? 'GURU' : 'ORANG TUA')) }}
                 </h2>
             </div>
         </div>

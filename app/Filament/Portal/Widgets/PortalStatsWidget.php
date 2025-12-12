@@ -31,12 +31,15 @@ class PortalStatsWidget extends BaseWidget
         if ($user->role === 'parent') {
             $pendingPayments = \App\Models\TuitionPayment::whereHas('student', function ($q) use ($user) {
                 $q->where('parent_id', $user->id);
-            })->where('status', 'pending')->sum('amount');
+            })->where('status', 'billed')->sum('amount');
+
+            $description = $pendingPayments > 0 ? 'Menunggu pembayaran' : 'Tidak ada tagihan aktif';
+            $color = $pendingPayments > 0 ? 'warning' : 'success';
 
             return [
                 Stat::make('Total Tagihan', 'Rp ' . number_format($pendingPayments, 0, ',', '.'))
-                    ->description('Menunggu pembayaran')
-                    ->color('warning'),
+                    ->description($description)
+                    ->color($color),
             ];
         }
 

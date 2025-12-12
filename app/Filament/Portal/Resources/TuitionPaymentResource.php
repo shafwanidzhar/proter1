@@ -21,57 +21,32 @@ class TuitionPaymentResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return in_array(auth()->user()->role, ['parent', 'headmaster']);
+        return auth()->check() && auth()->user()->role === 'parent';
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('student_id')
-                    ->relationship('student', 'name', function ($query) {
-                        // If parent, only show their students
-                        if (auth()->user()->role === 'parent') {
-                            return $query->where('parent_id', auth()->id());
-                        }
-                        return $query;
-                    })
-                    ->required(),
+                Forms\Components\TextInput::make('student_name')
+                    ->label('Student')
+                    ->formatStateUsing(fn($record) => $record->student->name)
+                    ->readOnly(),
+
+                Forms\Components\TextInput::make('month')
+                    ->readOnly(),
+
+                Forms\Components\TextInput::make('year')
+                    ->readOnly(),
+
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
-                    ->required()
-                    ->prefix('Rp'),
-                Forms\Components\Select::make('month')
-                    ->options([
-                        'January' => 'Januari',
-                        'February' => 'Februari',
-                        'March' => 'Maret',
-                        'April' => 'April',
-                        'May' => 'Mei',
-                        'June' => 'Juni',
-                        'July' => 'Juli',
-                        'August' => 'Agustus',
-                        'September' => 'September',
-                        'October' => 'Oktober',
-                        'November' => 'November',
-                        'December' => 'Desember',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('year')
-                    ->numeric()
-                    ->default(date('Y'))
-                    ->required(),
-                Forms\Components\FileUpload::make('proof_image')
-                    ->image()
-                    ->directory('tuition-proofs'),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'approved' => 'Lunas',
-                        'rejected' => 'Ditolak',
-                    ])
-                    ->default('pending')
-                    ->visible(fn() => auth()->user()->role !== 'parent'), // Parent cannot change status
+                    ->prefix('Rp')
+                    ->readOnly(),
+
+                Forms\Components\Placeholder::make('status_display')
+                    ->label('Status')
+                    ->content(fn($record) => $record->status),
             ]);
     }
 
@@ -79,28 +54,43 @@ class TuitionPaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('student.name')->label('Murid'),
-                Tables\Columns\TextColumn::make('amount')->money('IDR'),
+                Tables\Columns\TextColumn::make('student.name')->label('Student'),
                 Tables\Columns\TextColumn::make('month'),
                 Tables\Columns\TextColumn::make('year'),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'success' => 'approved',
-                        'danger' => 'rejected',
-                    ]),
-                Tables\Columns\ImageColumn::make('proof_image'),
+                Tables\Columns\TextColumn::make('amount')->numeric(decimalPlaces: 0)->prefix('Rp '),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'verified' => 'success',
+                        'rejected' => 'danger',
+                        'pending' => 'warning',
+                        'billed' => 'gray',
+                    }),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('pay')
+                    ->label('Pay Now')
+                    ->icon('heroicon-o-credit-card')
+                    ->color('primary')
+                    ->visible(fn($record) => $record->status === 'billed' || $record->status === 'rejected')
+                    ->requiresConfirmation()
+                    ->modalHeading('Konfirmasi Pembayaran')
+                    ->modalDescription('Apakah anda yakin ingin membayar tagihan ini? Status akan langsung berubah menjadi Lunas.')
+                    ->action(function ($record) {
+                        $record->update(['status' => 'verified']);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Pembayaran Berhasil')
+                            ->body('Terima kasih, pembayaran anda telah berhasil.')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 
@@ -108,7 +98,7 @@ class TuitionPaymentResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (auth()->user()->role === 'parent') {
+        if (auth()->check() && auth()->user()->role === 'parent') {
             // Show payments for students belonging to this parent
             $query->whereHas('student', function ($q) {
                 $q->where('parent_id', auth()->id());
@@ -129,7 +119,6 @@ class TuitionPaymentResource extends Resource
     {
         return [
             'index' => Pages\ListTuitionPayments::route('/'),
-            'create' => Pages\CreateTuitionPayment::route('/create'),
             'edit' => Pages\EditTuitionPayment::route('/{record}/edit'),
         ];
     }

@@ -12,8 +12,14 @@ class EditTuitionPayment extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [];
+    }
+
+    protected function afterSave(): void
+    {
+        $record = $this->record;
+        if ($record->status === 'billed' && $record->proof_image) {
+            $record->update(['status' => 'pending']);
+        }
     }
 }

@@ -43,8 +43,6 @@ class AttendanceResource extends Resource
                     ->required(),
                 Forms\Components\TimePicker::make('check_in')
                     ->seconds(false),
-                Forms\Components\TimePicker::make('check_out')
-                    ->seconds(false),
             ]);
     }
 
@@ -61,7 +59,6 @@ class AttendanceResource extends Resource
                         'danger' => 'alpha',
                     ]),
                 Tables\Columns\TextColumn::make('check_in'),
-                Tables\Columns\TextColumn::make('check_out'),
             ])
             ->filters([
                 //
