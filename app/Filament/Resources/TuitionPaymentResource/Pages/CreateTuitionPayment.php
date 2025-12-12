@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Portal\Resources\TuitionPaymentResource\Pages;
+namespace App\Filament\Resources\TuitionPaymentResource\Pages;
 
-use App\Filament\Portal\Resources\TuitionPaymentResource;
+use App\Filament\Resources\TuitionPaymentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

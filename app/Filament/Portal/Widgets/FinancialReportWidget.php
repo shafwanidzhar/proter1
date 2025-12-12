@@ -9,7 +9,7 @@ class FinancialReportWidget extends BaseWidget
 {
     public static function canView(): bool
     {
-        return auth()->user()->role === 'headmaster';
+        return auth()->check() && auth()->user()->role === 'admin';
     }
 
     protected function getStats(): array

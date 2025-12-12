@@ -68,7 +68,7 @@ class PayrollResource extends Resource
                 Tables\Columns\TextColumn::make('month'),
                 Tables\Columns\TextColumn::make('year'),
                 Tables\Columns\TextColumn::make('total_attendance'),
-                Tables\Columns\TextColumn::make('amount')->money('IDR'),
+                Tables\Columns\TextColumn::make('amount')->numeric(decimalPlaces: 0)->prefix('Rp '),
             ])
             ->filters([
                 //

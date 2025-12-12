@@ -38,7 +38,6 @@ class UserResource extends Resource
                 Forms\Components\Select::make('role')
                     ->options([
                         'admin' => 'Admin',
-                        'headmaster' => 'Kepala Sekolah',
                         'teacher' => 'Guru',
                         'parent' => 'Orang Tua',
                     ])
@@ -56,7 +55,6 @@ class UserResource extends Resource
                 Tables\Columns\BadgeColumn::make('role')
                     ->colors([
                         'danger' => 'admin',
-                        'warning' => 'headmaster',
                         'success' => 'teacher',
                         'primary' => 'parent',
                     ]),
@@ -65,7 +63,6 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make('role')
                     ->options([
                         'admin' => 'Admin',
-                        'headmaster' => 'Kepala Sekolah',
                         'teacher' => 'Guru',
                         'parent' => 'Orang Tua',
                     ]),
