@@ -16,9 +16,17 @@ class TuitionPaymentObserver
                 ->actions([
                     \Filament\Notifications\Actions\Action::make('bayar')
                         ->button()
-                        ->url(\App\Filament\Portal\Resources\TuitionPaymentResource::getUrl('edit', ['record' => $tuitionPayment])),
+                        ->url(url('/portal/tuition-payments')),
                 ])
                 ->sendToDatabase($tuitionPayment->user);
+
+            // Notification to Admin (Bill Sent)
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            \Filament\Notifications\Notification::make()
+                ->title('Tagihan Terkirim')
+                ->body('Pembayaran sebesar Rp ' . number_format($tuitionPayment->amount, 0, ',', '.') . ' telah terkirim kepada ' . $tuitionPayment->user->name)
+                ->success()
+                ->sendToDatabase($admins);
         }
     }
 
@@ -51,7 +59,7 @@ class TuitionPaymentObserver
                     ->actions([
                         \Filament\Notifications\Actions\Action::make('perbaiki')
                             ->button()
-                            ->url(\App\Filament\Portal\Resources\TuitionPaymentResource::getUrl('edit', ['record' => $tuitionPayment])),
+                            ->url(url('/portal/tuition-payments/' . $tuitionPayment->id . '/edit')),
                     ])
                     ->sendToDatabase($tuitionPayment->user);
             }

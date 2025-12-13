@@ -1,7 +1,7 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="flex flex-col items-center justify-center space-y-4">
-            <h2 class="text-xl font-bold">Attendance Check-In</h2>
+            <h2 class="text-xl font-bold">Absensi Guru</h2>
             <p class="text-gray-500">{{ now()->format('l, d F Y') }}</p>
 
             @if($this->hasCheckedIn())

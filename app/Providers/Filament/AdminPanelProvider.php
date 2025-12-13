@@ -37,8 +37,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                // Widgets\AccountWidget::class,
             ])
+            ->databaseNotifications()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -53,6 +54,12 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 \Filament\Http\Middleware\Authenticate::class,
                 \App\Http\Middleware\AdminAccessMiddleware::class,
+            ])
+            ->userMenuItems([
+                'settings' => \Filament\Navigation\MenuItem::make()
+                    ->label('Settings')
+                    ->url(fn(): string => \App\Filament\Pages\EditProfile::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth'),
             ]);
     }
 }

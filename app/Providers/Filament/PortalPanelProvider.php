@@ -46,6 +46,7 @@ class PortalPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets removed as requested
             ])
+            ->databaseNotifications()
             ->middleware([
                 \Illuminate\Cookie\Middleware\EncryptCookies::class,
                 \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -58,6 +59,12 @@ class PortalPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 \Filament\Http\Middleware\Authenticate::class,
+            ])
+            ->userMenuItems([
+                'settings' => \Filament\Navigation\MenuItem::make()
+                    ->label('Settings')
+                    ->url(fn(): string => \App\Filament\Portal\Pages\EditProfile::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth'),
             ]);
     }
 }

@@ -9,6 +9,10 @@ class AdminStatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        $income = \App\Models\TuitionPayment::where('status', 'verified')->sum('amount');
+        $expense = \App\Models\Expense::sum('amount');
+        $balance = $income - $expense;
+
         return [
             Stat::make('Total Students', \App\Models\Student::count())
                 ->description('Total registered students')
@@ -18,6 +22,10 @@ class AdminStatsOverview extends BaseWidget
                 ->description('Total registered teachers')
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('primary'),
+            Stat::make('Saldo Kas Sekolah', 'Rp ' . number_format($balance, 0, ',', '.'))
+                ->description('Total Pemasukan - Pengeluaran')
+                ->descriptionIcon('heroicon-m-banknotes')
+                ->color($balance >= 0 ? 'success' : 'danger'),
         ];
     }
 }

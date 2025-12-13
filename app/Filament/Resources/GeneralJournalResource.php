@@ -17,7 +17,8 @@ class GeneralJournalResource extends Resource
 {
     protected static ?string $model = GeneralJournal::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationGroup = 'Keuangan';
 
     public static function form(Form $form): Form
     {

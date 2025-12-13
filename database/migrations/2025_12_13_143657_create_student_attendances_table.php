@@ -10,13 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('payrolls', function (Blueprint $table) {
+        Schema::create('student_attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // Teacher
-            $table->string('month');
-            $table->year('year');
-            $table->integer('total_attendance')->default(0);
-            $table->decimal('amount', 10, 2);
+            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
+            $table->date('date');
+            $table->enum('status', ['present', 'sick', 'alpha', 'permission']);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('payrolls');
+        Schema::dropIfExists('student_attendances');
     }
 };
