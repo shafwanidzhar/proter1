@@ -17,7 +17,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationGroup = 'Data Guru';
+    protected static ?string $navigationLabel = 'Guru & Staf';
 
     public static function form(Form $form): Form
     {
@@ -42,7 +44,11 @@ class UserResource extends Resource
                         'parent' => 'Orang Tua',
                     ])
                     ->required()
-                    ->default('parent'),
+                    ->default('parent')
+                    ->reactive(),
+                Forms\Components\TextInput::make('class')
+                    ->label('Kelas (Khusus Guru)')
+                    ->visible(fn(callable $get) => $get('role') === 'teacher'),
             ]);
     }
 

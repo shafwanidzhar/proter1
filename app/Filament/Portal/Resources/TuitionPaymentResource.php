@@ -19,6 +19,7 @@ class TuitionPaymentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
+
     public static function canViewAny(): bool
     {
         return auth()->check() && auth()->user()->role === 'parent';
@@ -82,11 +83,20 @@ class TuitionPaymentResource extends Resource
                     ->action(function ($record) {
                         $record->update(['status' => 'verified']);
 
+                        // Notification to Parent
                         \Filament\Notifications\Notification::make()
                             ->title('Pembayaran Berhasil')
-                            ->body('Terima kasih, pembayaran anda telah berhasil.')
+                            ->body("Kamu berhasil membayar SPP untuk bulan {$record->month} sebesar Rp " . number_format($record->amount, 0, ',', '.'))
                             ->success()
                             ->send();
+
+                        // Notification to Admin
+                        $admins = \App\Models\User::where('role', 'admin')->get();
+                        \Filament\Notifications\Notification::make()
+                            ->title('Pembayaran Diterima')
+                            ->body("{$record->user->name} telah membayar SPP")
+                            ->success()
+                            ->sendToDatabase($admins);
                     }),
             ])
             ->bulkActions([

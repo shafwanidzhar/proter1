@@ -27,8 +27,19 @@ class TeacherAttendanceWidget extends Widget
         }
 
         $now = now();
-        $lateThreshold = now()->setTime(8, 0, 0); // 08:00 AM
-        $status = $now->gt($lateThreshold) ? 'late' : 'present';
+        $lateThreshold = now()->setTime(12, 0, 0); // 12:00 PM
+        $startTime = now()->setTime(7, 0, 0); // 07:00 AM
+
+        if ($now->lt($startTime)) {
+            \Filament\Notifications\Notification::make()
+                ->title('Belum Waktunya Absen')
+                ->body('Absensi dimulai pukul 07:00.')
+                ->warning()
+                ->send();
+            return;
+        }
+
+        $status = $now->lte($lateThreshold) ? 'present' : 'late';
 
         $user->attendances()->create([
             'date' => $today,

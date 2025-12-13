@@ -5,28 +5,30 @@ namespace App\Filament\Portal\Widgets;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use App\Models\Schedule;
 
 class TeacherScheduleWidget extends BaseWidget
 {
+    protected static ?string $heading = 'Jadwal Mengajar';
+    protected int|string|array $columnSpan = 'full';
+
     public static function canView(): bool
     {
         return auth()->user()->role === 'teacher';
     }
 
-    protected int|string|array $columnSpan = 'full';
-
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                // Dummy query since we don't have a Schedule model
-                \App\Models\Student::query()->limit(3)
+                Schedule::where('teacher_id', auth()->id())
             )
-            ->heading('Jadwal Mengajar')
             ->columns([
-                Tables\Columns\TextColumn::make('class')->label('Kelas')->default('TK A'),
-                Tables\Columns\TextColumn::make('subject')->label('Mata Pelajaran')->default('Matematika'),
-                Tables\Columns\TextColumn::make('time')->label('Waktu')->default('08:00 - 09:00'),
+                Tables\Columns\TextColumn::make('class')->label('Kelas'),
+                Tables\Columns\TextColumn::make('subject')->label('Mata Pelajaran'),
+                Tables\Columns\TextColumn::make('time')
+                    ->label('Waktu')
+                    ->getStateUsing(fn(Schedule $record) => \Carbon\Carbon::parse($record->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($record->end_time)->format('H:i')),
             ]);
     }
 }

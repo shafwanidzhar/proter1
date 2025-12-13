@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\PayrollResource\Pages;
+namespace App\Filament\Resources\ScheduleResource\Pages;
 
-use App\Filament\Resources\PayrollResource;
+use App\Filament\Resources\ScheduleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditPayroll extends EditRecord
+class EditSchedule extends EditRecord
 {
-    protected static string $resource = PayrollResource::class;
+    protected static string $resource = ScheduleResource::class;
 
     protected function getHeaderActions(): array
     {
